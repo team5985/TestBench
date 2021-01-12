@@ -8,6 +8,10 @@ import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+
+import com.ctre.phoenix.motorcontrol.ControlMode;
+import com.ctre.phoenix.motorcontrol.can.TalonFX;
+import edu.wpi.first.wpilibj.Compressor;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
@@ -20,11 +24,15 @@ import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
 public class Robot extends TimedRobot {
 
+  public static final int kPcmCanId = 61;
+
   Joystick stick = new Joystick(0);
 
-  static CANSparkMax motor1 = new CANSparkMax(1, MotorType.kBrushless);
-  static CANSparkMax motor2 = new CANSparkMax(2, MotorType.kBrushless);
-
+  static CANSparkMax neo1 = new CANSparkMax(1, MotorType.kBrushless);
+  static CANSparkMax neo2 = new CANSparkMax(2, MotorType.kBrushless);
+  TalonFX falcon1 = new TalonFX(3);
+  TalonFX falcon2 = new TalonFX(4);
+  Compressor compressor = new Compressor(kPcmCanId);
 
   private static final String kDefaultAuto = "Default";
   private static final String kCustomAuto = "My Auto";
@@ -90,8 +98,30 @@ public class Robot extends TimedRobot {
   /** This function is called periodically during operator control. */
   @Override
   public void teleopPeriodic() {
-    motor1.set(stick.getThrottle());
-    motor2.set(-(stick.getThrottle()));
+    if(stick.getRawButton(1)) {
+      neo1.set(stick.getThrottle());
+      neo2.set(-(stick.getThrottle()));
+      falcon1.set(ControlMode.PercentOutput, stick.getThrottle());
+      falcon2.set(ControlMode.PercentOutput, -(stick.getThrottle()));
+
+      System.out.println(stick.getThrottle());
+    } else {
+      neo1.set(0);
+      neo2.set(0);
+      falcon1.set(ControlMode.PercentOutput, 0);
+      falcon2.set(ControlMode.PercentOutput, 0);
+
+
+    }
+
+    if(stick.getRawButton(7)) {
+      compressor.start();
+    } else if(stick.getRawButton(8)) {
+      compressor.stop();
+    } else {
+
+    }
+
   }
 
   /** This function is called once when the robot is disabled. */
