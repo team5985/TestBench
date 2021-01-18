@@ -8,6 +8,8 @@ import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+
+import com.revrobotics.CANPIDController;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
@@ -24,6 +26,14 @@ public class Robot extends TimedRobot {
 
   static CANSparkMax motor1 = new CANSparkMax(1, MotorType.kBrushless);
   static CANSparkMax motor2 = new CANSparkMax(2, MotorType.kBrushless);
+
+  public static CANPIDController getMotor1PIDController() {
+		return motor1.getPIDController();
+	}
+
+  public static CANPIDController getMotor2PIDController() {
+		return motor2.getPIDController();
+	}
 
 
   private static final String kDefaultAuto = "Default";
