@@ -2,6 +2,7 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
+
 package frc.robot;
 import frc.robot.GyroSensor;
 import edu.wpi.first.wpilibj.Joystick;
@@ -46,9 +47,10 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void robotInit() {
-    m_chooser.setDefaultOption("Default Auto", kDefaultAuto);
+   /* m_chooser.setDefaultOption("Default Auto", kDefaultAuto);
     m_chooser.addOption("My Auto", kCustomAuto);
-    SmartDashboard.putData("Auto choices", m_chooser);
+    SmartDashboard.putData("Auto choices", m_chooser);*/
+    
   }
 
   /**
@@ -94,7 +96,10 @@ public class Robot extends TimedRobot {
 
   /** This function is called once when teleop is enabled. */
   @Override
-  public void teleopInit() {}
+  public void teleopInit() {
+    GyroSensor.getInstance().gyroCalibrate();
+
+  }
 
   /** This function is called periodically during operator control. */
   @Override
@@ -123,8 +128,6 @@ public class Robot extends TimedRobot {
     {
 
     }
- 
-    SmartDashboard.putNumber("Degrees Rotated", GyroSensor.gyroDegrees);
   }
 
   /** This function is called once when the robot is disabled. */
@@ -137,7 +140,9 @@ public class Robot extends TimedRobot {
 
   /** This function is called once when test mode is enabled. */
   @Override
-  public void testInit() {}
+  public void testInit() {
+    GyroSensor.getInstance().gyroCalibrate();
+  }
 
   /** This function is called periodically during test mode. */
   @Override
