@@ -41,21 +41,11 @@ public class GyroSensor{
         gyro.reset();
     }
 
-    
+
     public void gyroCalibrate(){
-        System.out.println("Cal start");
-        gyro.calibrate();
-        System.out.println("Cal end");
+    gyro.calibrate();
     }
 
-    public void update(){
-        // gyroDegrees = getGyroDegrees(getGyro());
-        // gyroRotationRate = getGyroRotationRate(getGyro());
-
-
-
-    }
-    
 
 
 

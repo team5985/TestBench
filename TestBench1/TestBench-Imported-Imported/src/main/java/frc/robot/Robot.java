@@ -30,10 +30,10 @@ public class Robot extends TimedRobot {
 
   Joystick stick = new Joystick(0);
 
-  //static CANSparkMax neo1 = new CANSparkMax(1, MotorType.kBrushless);
-  //static CANSparkMax neo2 = new CANSparkMax(2, MotorType.kBrushless);
-  //TalonFX falcon1 = new TalonFX(3);
-  //TalonFX falcon2 = new TalonFX(4);
+  static CANSparkMax neo1 = new CANSparkMax(1, MotorType.kBrushless);
+  static CANSparkMax neo2 = new CANSparkMax(2, MotorType.kBrushless);
+  TalonFX falcon1 = new TalonFX(3);
+  TalonFX falcon2 = new TalonFX(4);
   Compressor compressor = new Compressor(kPcmCanId);
 
   private static final String kDefaultAuto = "Default";
@@ -104,7 +104,7 @@ public class Robot extends TimedRobot {
   /** This function is called periodically during operator control. */
   @Override
   public void teleopPeriodic() {
-   /* if(stick.getRawButton(1)) {
+    if(stick.getRawButton(1)) {
       neo1.set(stick.getThrottle());
       neo2.set(-(stick.getThrottle()));
       falcon1.set(ControlMode.PercentOutput, stick.getThrottle());
@@ -127,10 +127,7 @@ public class Robot extends TimedRobot {
     } else 
     {
 
-    }*/ 
-    GyroSensor.getInstance().update();
-    SmartDashboard.putNumber("Degrees Rotated", GyroSensor.getInstance().getGyroDegrees());
-    System.out.println("Degrees Rotated " + GyroSensor.getInstance().getGyroDegrees());
+    }
   }
 
   /** This function is called once when the robot is disabled. */
