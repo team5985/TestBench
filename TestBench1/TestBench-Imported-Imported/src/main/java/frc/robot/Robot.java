@@ -2,6 +2,7 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
+
 package frc.robot;
 import frc.robot.GyroSensor;
 import edu.wpi.first.wpilibj.Joystick;
@@ -29,10 +30,10 @@ public class Robot extends TimedRobot {
 
   Joystick stick = new Joystick(0);
 
-  static CANSparkMax neo1 = new CANSparkMax(1, MotorType.kBrushless);
-  static CANSparkMax neo2 = new CANSparkMax(2, MotorType.kBrushless);
-  TalonFX falcon1 = new TalonFX(3);
-  TalonFX falcon2 = new TalonFX(4);
+  //static CANSparkMax neo1 = new CANSparkMax(1, MotorType.kBrushless);
+  //static CANSparkMax neo2 = new CANSparkMax(2, MotorType.kBrushless);
+  //TalonFX falcon1 = new TalonFX(3);
+  //TalonFX falcon2 = new TalonFX(4);
   Compressor compressor = new Compressor(kPcmCanId);
 
   private static final String kDefaultAuto = "Default";
@@ -46,9 +47,10 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void robotInit() {
-    m_chooser.setDefaultOption("Default Auto", kDefaultAuto);
+   /* m_chooser.setDefaultOption("Default Auto", kDefaultAuto);
     m_chooser.addOption("My Auto", kCustomAuto);
-    SmartDashboard.putData("Auto choices", m_chooser);
+    SmartDashboard.putData("Auto choices", m_chooser);*/
+    
   }
 
   /**
@@ -94,12 +96,15 @@ public class Robot extends TimedRobot {
 
   /** This function is called once when teleop is enabled. */
   @Override
-  public void teleopInit() {}
+  public void teleopInit() {
+    GyroSensor.getInstance().gyroCalibrate();
+
+  }
 
   /** This function is called periodically during operator control. */
   @Override
   public void teleopPeriodic() {
-    if(stick.getRawButton(1)) {
+   /* if(stick.getRawButton(1)) {
       neo1.set(stick.getThrottle());
       neo2.set(-(stick.getThrottle()));
       falcon1.set(ControlMode.PercentOutput, stick.getThrottle());
@@ -122,9 +127,10 @@ public class Robot extends TimedRobot {
     } else 
     {
 
-    }
- 
-    SmartDashboard.putNumber("Degrees Rotated", GyroSensor.gyroDegrees);
+    }*/ 
+    GyroSensor.getInstance().update();
+    SmartDashboard.putNumber("Degrees Rotated", GyroSensor.getInstance().getGyroDegrees());
+    System.out.println("Degrees Rotated " + GyroSensor.getInstance().getGyroDegrees());
   }
 
   /** This function is called once when the robot is disabled. */
@@ -137,7 +143,9 @@ public class Robot extends TimedRobot {
 
   /** This function is called once when test mode is enabled. */
   @Override
-  public void testInit() {}
+  public void testInit() {
+    GyroSensor.getInstance().gyroCalibrate();
+  }
 
   /** This function is called periodically during test mode. */
   @Override
