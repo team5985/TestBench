@@ -4,7 +4,9 @@
 
 package frc.robot;
 
+import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -24,8 +26,16 @@ public class Robot extends TimedRobot {
 
   Joystick stick = new Joystick(0);
 
+  Compressor comp = new Compressor(61);
+  Solenoid intakeActuator = new Solenoid(61, 0);
+  Solenoid indexerSolenoid = new Solenoid(61, 1);
+
   static CANSparkMax motor1 = new CANSparkMax(1, MotorType.kBrushless);
   static CANSparkMax motor2 = new CANSparkMax(2, MotorType.kBrushless);
+
+  PidController m_PidController;
+  RobotMap m_RobotMap;
+
 
   public static CANPIDController getMotor1PIDController() {
 		return motor1.getPIDController();
@@ -98,10 +108,34 @@ public class Robot extends TimedRobot {
   public void teleopInit() {}
 
   /** This function is called periodically during operator control. */
+
+
   @Override
   public void teleopPeriodic() {
-    motor1.set(stick.getThrottle());
-    motor2.set(-(stick.getThrottle()));
+    comp.start();
+    //motor1.set(stick.getThrottle());
+    //motor2.set(-(stick.getThrottle()));
+    if(stick.getTrigger()) {
+      m_PidController.getInstance().shooterPIDControl(stick.getThrottle());
+      indexerSolenoid.set(true);
+      m_RobotMap.getInstance().getIndexerEsc().set(1);
+    } else {
+      indexerSolenoid.set(false);
+      motor1.set(0);
+      motor2.set(0);
+      m_RobotMap.getInstance().getIndexerEsc().set(-1);
+    }
+
+    //intake
+    if(stick.getRawButton(2)) {
+      intakeActuator.set(true);
+      m_RobotMap.getInstance().getIntakeEsc().set(1);
+    } else {
+      m_RobotMap.getInstance().getIntakeEsc().set(0);
+      intakeActuator.set(false);
+    }
+
+
   }
 
   /** This function is called once when the robot is disabled. */
