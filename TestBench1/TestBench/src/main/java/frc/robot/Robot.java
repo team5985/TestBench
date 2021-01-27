@@ -5,16 +5,20 @@
 package frc.robot;
 
 import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.wpilibj.PowerDistributionPanel;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
+
 import edu.wpi.first.wpilibj.Compressor;
+
+import com.revrobotics.CANEncoder;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
-
+import frc.robot.SparkMaxCheck;
 /**
  * The VM is configured to automatically run this class, and to call the functions corresponding to
  * each mode, as described in the TimedRobot documentation. If you change the name of this class or
@@ -24,20 +28,22 @@ import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
 public class Robot extends TimedRobot {
 
-  public static final int kPcmCanId = 61;
+  //public static final int kPcmCanId = 61;
 
   Joystick stick = new Joystick(0);
 
   static CANSparkMax neo1 = new CANSparkMax(1, MotorType.kBrushless);
   static CANSparkMax neo2 = new CANSparkMax(2, MotorType.kBrushless);
-  TalonFX falcon1 = new TalonFX(3);
-  TalonFX falcon2 = new TalonFX(4);
-  Compressor compressor = new Compressor(kPcmCanId);
-
-  private static final String kDefaultAuto = "Default";
-  private static final String kCustomAuto = "My Auto";
-  private String m_autoSelected;
-  private final SendableChooser<String> m_chooser = new SendableChooser<>();
+  //TalonFX falcon1 = new TalonFX(3);
+  //TalonFX falcon2 = new TalonFX(4);
+  CANEncoder encoder1 = new CANEncoder(neo2);
+  //Compressor compressor = new Compressor(kPcmCanId);
+  PowerDistributionPanel pdp = new PowerDistributionPanel(62);
+  SparkMaxCheck checkNeo2 = new SparkMaxCheck(neo2, pdp, 15, encoder1);
+  //private static final String kDefaultAuto = "Default";
+  //private static final String kCustomAuto = "My Auto";
+  //private String m_autoSelected;
+  //private final SendableChooser<String> m_chooser = new SendableChooser<>();
 
   /**
    * This function is run when the robot is first started up and should be used for any
@@ -45,12 +51,12 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void robotInit() {
-    m_chooser.setDefaultOption("Default Auto", kDefaultAuto);
-    m_chooser.addOption("My Auto", kCustomAuto);
-    SmartDashboard.putData("Auto choices", m_chooser);
+
   }
 
   /**
+   * 
+   * \\
    * This function is called every robot packet, no matter the mode. Use this for items like
    * diagnostics that you want ran during disabled, autonomous, teleoperated and test.
    *
@@ -72,23 +78,13 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void autonomousInit() {
-    m_autoSelected = m_chooser.getSelected();
-    // m_autoSelected = SmartDashboard.getString("Auto Selector", kDefaultAuto);
-    System.out.println("Auto selected: " + m_autoSelected);
+    
   }
 
   /** This function is called periodically during autonomous. */
   @Override
   public void autonomousPeriodic() {
-    switch (m_autoSelected) {
-      case kCustomAuto:
-        // Put custom auto code here
-        break;
-      case kDefaultAuto:
-      default:
-        // Put default auto code here
-        break;
-    }
+
   }
 
   /** This function is called once when teleop is enabled. */
@@ -99,29 +95,13 @@ public class Robot extends TimedRobot {
   @Override
   public void teleopPeriodic() {
     if(stick.getRawButton(1)) {
-      neo1.set(stick.getThrottle());
-      neo2.set(-(stick.getThrottle()));
-      falcon1.set(ControlMode.PercentOutput, stick.getThrottle());
-      falcon2.set(ControlMode.PercentOutput, -(stick.getThrottle()));
-
-      System.out.println(stick.getThrottle());
-    } else {
-      neo1.set(0);
-      neo2.set(0);
-      falcon1.set(ControlMode.PercentOutput, 0);
-      falcon2.set(ControlMode.PercentOutput, 0);
-
-
+      neo2.set(1);
     }
-
-    if(stick.getRawButton(7)) {
-      compressor.start();
-    } else if(stick.getRawButton(8)) {
-      compressor.stop();
-    } else {
-
+    else{
+    neo2.set(0);
     }
-
+    checkNeo2.update();
+    SmartDashboard.putNumber("Error?", pdp.getCurrent(15));
   }
 
   /** This function is called once when the robot is disabled. */
