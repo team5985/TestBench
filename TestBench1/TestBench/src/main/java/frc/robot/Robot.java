@@ -11,6 +11,9 @@ import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
+import com.ctre.phoenix.motorcontrol.ControlMode;
+import com.ctre.phoenix.motorcontrol.can.TalonFX;
+import com.revrobotics.CANEncoder;
 import com.revrobotics.CANPIDController;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
@@ -27,11 +30,16 @@ public class Robot extends TimedRobot {
   Joystick stick = new Joystick(0);
 
   Compressor comp = new Compressor(61);
-  Solenoid intakeActuator = new Solenoid(61, 0);
-  Solenoid indexerSolenoid = new Solenoid(61, 1);
+  Solenoid intakeActuator = new Solenoid(61, 1);
+  Solenoid indexerSolenoid = new Solenoid(61, 0);
 
   static CANSparkMax motor1 = new CANSparkMax(1, MotorType.kBrushless);
   static CANSparkMax motor2 = new CANSparkMax(2, MotorType.kBrushless);
+
+  static TalonFX talon1 = new TalonFX(3);
+  static TalonFX talon2 = new TalonFX(4);
+
+  static CANEncoder shooterVelocityEncoder = motor1.getEncoder();
 
   PidController m_PidController;
   RobotMap m_RobotMap;
@@ -43,7 +51,11 @@ public class Robot extends TimedRobot {
 
   public static CANPIDController getMotor2PIDController() {
 		return motor2.getPIDController();
-	}
+  }
+  
+  public static CANEncoder getShooterVelocityEncoder() {
+    return shooterVelocityEncoder;
+  }
 
 
   private static final String kDefaultAuto = "Default";
@@ -105,20 +117,23 @@ public class Robot extends TimedRobot {
 
   /** This function is called once when teleop is enabled. */
   @Override
-  public void teleopInit() {}
+  public void teleopInit() {
+    comp.start();
+
+  }
+
 
   /** This function is called periodically during operator control. */
 
 
   @Override
   public void teleopPeriodic() {
-    comp.start();
     //motor1.set(stick.getThrottle());
     //motor2.set(-(stick.getThrottle()));
     if(stick.getTrigger()) {
-      m_PidController.getInstance().shooterPIDControl(stick.getThrottle());
-      indexerSolenoid.set(true);
-      m_RobotMap.getInstance().getIndexerEsc().set(1);
+        indexerSolenoid.set(true);
+        m_RobotMap.getInstance().getIndexerEsc().set(1);
+      
     } else {
       indexerSolenoid.set(false);
       motor1.set(0);
@@ -135,7 +150,29 @@ public class Robot extends TimedRobot {
       intakeActuator.set(false);
     }
 
+    //Reverse shooter
+    
 
+
+  
+
+    if(stick.getRawButton(3)) {
+      //m_PidController.getInstance().shooterPIDControl(stick.getThrottle() * 5676);
+      talon1.set(ControlMode.PercentOutput, -stick.getThrottle());
+      talon2.set(ControlMode.PercentOutput, stick.getThrottle());
+      System.out.println("Set PWR" + (stick.getThrottle()*100) + "%");
+      System.out.println("RPM" + (talon1.getSelectedSensorVelocity()));
+
+  
+    } else if(stick.getRawButton(4)) {
+      talon1.set(ControlMode.PercentOutput, stick.getThrottle());
+      talon2.set(ControlMode.PercentOutput, -stick.getThrottle()); 
+    } else {
+      talon1.set(ControlMode.PercentOutput, 0); 
+      talon2.set(ControlMode.PercentOutput, 0); 
+
+
+    }
   }
 
   /** This function is called once when the robot is disabled. */

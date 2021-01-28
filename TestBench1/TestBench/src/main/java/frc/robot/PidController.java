@@ -59,6 +59,15 @@ class PidController {
         Robot.getMotor1PIDController().setReference(targetVelocity, ControlType.kVelocity);
         Robot.getMotor2PIDController().setReference(-targetVelocity, ControlType.kVelocity);
         System.out.println(targetVelocity);
+        System.out.println((Robot.getShooterVelocityEncoder().getVelocity()) + " RPM");
         
+    }
+
+    public boolean getShooterAcceptableSpeed(double speed) {
+        if(Robot.getShooterVelocityEncoder().getVelocity() > speed - (speed/10) && Robot.getShooterVelocityEncoder().getVelocity() < speed + (speed/10)) {
+            return true;
+        } else {
+            return true;
+        }
     }
 }
