@@ -6,10 +6,12 @@ package frc.robot;
 
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.PowerDistributionPanel;
+import edu.wpi.first.wpilibj.Spark;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
+import com.ctre.phoenix.CANifier.PWMChannel;
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
 
@@ -34,12 +36,16 @@ public class Robot extends TimedRobot {
 
   static CANSparkMax neo1 = new CANSparkMax(1, MotorType.kBrushless);
   static CANSparkMax neo2 = new CANSparkMax(2, MotorType.kBrushless);
+  static Spark rightMotor1 = new Spark(0);
+  static Spark rightMotor2 = new Spark(1);
+  static Spark leftMotor1 = new Spark(2);
+  static Spark leftMotor2 = new Spark(3);
   //TalonFX falcon1 = new TalonFX(3);
   //TalonFX falcon2 = new TalonFX(4);
   CANEncoder encoder1 = new CANEncoder(neo2);
+  CANEncoder encoder2 = new CANEncoder(neo2);
   //Compressor compressor = new Compressor(kPcmCanId);
-  PowerDistributionPanel pdp = new PowerDistributionPanel(62);
-  SparkMaxCheck checkNeo2 = new SparkMaxCheck(neo2, pdp, 15, encoder1);
+  PowerDistributionPanel pdp = new PowerDistributionPanel(61);
   //private static final String kDefaultAuto = "Default";
   //private static final String kCustomAuto = "My Auto";
   //private String m_autoSelected;
@@ -95,13 +101,25 @@ public class Robot extends TimedRobot {
   @Override
   public void teleopPeriodic() {
     if(stick.getRawButton(1)) {
-      neo2.set(1);
+    leftMotor2.set(0.5);
+    rightMotor2.set(-0.5);
+    leftMotor1.set(0.5);
+    rightMotor1.set(-0.5);
+    }
+    else if (stick.getRawButton((2))){
+      leftMotor2.set(-0.5);
+      rightMotor2.set(0.5);
+      leftMotor1.set(-0.5);
+      rightMotor1.set(0.5);
     }
     else{
-    neo2.set(0);
+    leftMotor2.set(0);
+    leftMotor1.set(0);
+    rightMotor1.set(0);
+    rightMotor2.set(0);
+
     }
-    checkNeo2.update();
-    SmartDashboard.putNumber("Error?", pdp.getCurrent(15));
+    SmartDashboard.putNumber("Current", pdp.getCurrent(0));
   }
 
   /** This function is called once when the robot is disabled. */

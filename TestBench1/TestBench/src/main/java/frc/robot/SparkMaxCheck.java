@@ -13,11 +13,11 @@ public class SparkMaxCheck {
     CANEncoder m_encoder;
     int scancount;
 
-    public SparkMaxCheck(CANSparkMax spark, PowerDistributionPanel pdp, int controllerChannel, CANEncoder encoder) {
+    public SparkMaxCheck(CANSparkMax spark, CANEncoder encoder, int controllerChannel, PowerDistributionPanel pdp) {
         m_spark = spark;
-        m_PDP = pdp;
-        m_controllerChannel = controllerChannel;
         m_encoder = encoder;
+        m_controllerChannel = controllerChannel;
+        m_PDP = pdp;
         scancount = 0;
     }
 
@@ -28,18 +28,18 @@ public class SparkMaxCheck {
      * CANSPARKMax.class line 719 Current as detected by m_PDP Motor Rotations on
      * Encoder CANSPARKMax.class Line 257 Motor Tempertaure CANSPARKMax.class Line
      * 726
+     * 
+     * CHECK IF ENCODER CONNECTED;;; //FIXME 
      */
     public int sparkMaxMotorCheck(){
-        //FIXME
 
-        //ADD SCANCOUNT
     if(Math.abs(m_spark.get()) >= kMinimumSpeedForCheck){
         if(scancount >= 15){
-            if(checkControllerComms() == 2 || checkControllerError() == 2 || checkControllerBusVoltage() == 2 || checkMotorCurrent() == 2 || checkPDPCurrent() == 2 || checkEncoderRotations() == 2 || checkMotorTemperature() == 2)
+            if(checkControllerComms() == 2 || checkControllerError() == 2 || checkControllerBusVoltage() == 2 || checkEncoderRotations() == 2 || checkMotorTemperature() == 2 || checkPDPCurrent() == 2)
             {
             return 2;
             }
-            else if(checkControllerComms() == 1 || checkControllerError() == 1 || checkControllerBusVoltage() == 1 || checkMotorCurrent() == 1 || checkPDPCurrent() == 1 || checkEncoderRotations() == 1 || checkMotorTemperature() == 1)
+            else if(checkControllerComms() == 1 || checkControllerError() == 1 || checkControllerBusVoltage() == 1 || checkEncoderRotations() == 1 || checkMotorTemperature() == 1 || checkPDPCurrent() == 1)
             {
             return 1;
             }
@@ -64,7 +64,7 @@ public class SparkMaxCheck {
         }
     }   
 
-    public int checkControllerComms() {
+    private int checkControllerComms() {
         if (m_spark.getDeviceId() < 0) {
             return 2;
         } else {
@@ -72,7 +72,7 @@ public class SparkMaxCheck {
         }
     }
 
-    public int checkControllerError() {
+    private int checkControllerError() {
         if (m_spark.getFaults() > 0) {
             return 2;
         } else {
@@ -81,7 +81,7 @@ public class SparkMaxCheck {
 
     }
 
-    public int checkControllerBusVoltage() {
+    private int checkControllerBusVoltage() {
         if (m_spark.getBusVoltage() < kControllerBusVoltageShutdown) {
             return 2;
         } else if (m_spark.getBusVoltage() < kControllerBusVoltageWarning
@@ -92,7 +92,7 @@ public class SparkMaxCheck {
         }
     }
     //FIXME
-    public int checkMotorCurrent() {
+    private int checkMotorCurrent() {
         if (m_spark.getOutputCurrent() < kMotorOutputCurrentShutdown) {
             return 2;
         } else if (m_spark.getOutputCurrent() < kMotorOutputCurrentWarning
@@ -104,7 +104,7 @@ public class SparkMaxCheck {
 
     }
     //FIXME
-    public int checkPDPCurrent() {
+    private int checkPDPCurrent() {
         if (m_PDP.getCurrent(m_controllerChannel) < kPDPOutputCurrentShutdown) {
             return 2;
         } else if (m_PDP.getCurrent(m_controllerChannel) < kPDPOutputCurrentWarning
@@ -114,7 +114,7 @@ public class SparkMaxCheck {
             return 0;
         }
     }
-    public int checkEncoderRotations() {
+    private int checkEncoderRotations() {
         if (Math.sqrt(Math.abs(m_encoder.getVelocity())) <= kEncoderVelocityShutdown) {
             return 2;
         } else if (Math.abs(m_encoder.getVelocity()) <= kEncoderVelocityWarning && Math.abs(m_encoder.getVelocity()) > kEncoderVelocityShutdown) {
@@ -124,7 +124,7 @@ public class SparkMaxCheck {
         }
     }
 
-    public int checkMotorTemperature() {
+    private int checkMotorTemperature() {
         if (m_spark.getMotorTemperature() >= kMotorTemperatureShutdown) {
             return 2;
         } else if (m_spark.getMotorTemperature() >= kMotorTemperatureWarning
@@ -136,11 +136,10 @@ public class SparkMaxCheck {
     }
 
 
-    // FIXME
     public final int kMotorTemperatureShutdown = 80;
     public final int kMotorTemperatureWarning = 55;
-    public final int kPDPOutputCurrentShutdown = 20;
-    public final int kPDPOutputCurrentWarning = 25;
+    public final int kPDPOutputCurrentShutdown = 4;
+    public final int kPDPOutputCurrentWarning = 7;
     public final int kMotorOutputCurrentShutdown = 20;
     public final int kMotorOutputCurrentWarning = 25;
     public final int kControllerBusVoltageShutdown = 10;
