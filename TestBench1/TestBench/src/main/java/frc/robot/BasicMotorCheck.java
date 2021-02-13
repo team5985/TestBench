@@ -56,6 +56,7 @@ public class BasicMotorCheck {
                         return 0;
                     }
                     else{
+                    faultScanCount++;
                     faultOnLastScan = true;
                     return 0;
                     }
@@ -75,6 +76,7 @@ public class BasicMotorCheck {
                         return 0;
                     }
                     else{
+                    faultScanCount++;
                     faultOnLastScan = true;
                     return 0;
                     }
