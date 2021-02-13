@@ -132,8 +132,8 @@ public class VictorSPXCheck {
 
     private final int kMotorTemperatureShutdown = 80;
     private final int kMotorTemperatureWarning = 55;
-    private final int kPDPOutputCurrentShutdown = 4;
-    private final int kPDPOutputCurrentWarning = 7;
+    private final int kPDPOutputCurrentShutdown = 1;
+    private final int kPDPOutputCurrentWarning = 2;
     private final int kMotorOutputCurrentShutdown = 20;
     private final int kMotorOutputCurrentWarning = 25;
     private final int kControllerBusVoltageShutdown = 10;

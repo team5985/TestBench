@@ -10,17 +10,20 @@ import edu.wpi.first.wpilibj.Spark;
 public class BasicMotorCheck {
     PowerDistributionPanel m_PDP;
     int m_controllerChannel;
+    Spark m_spark;
     int scancount;
 
-    public BasicMotorCheck(int controllerChannel, PowerDistributionPanel pdp) {
-
+    public BasicMotorCheck(Spark spark, int controllerChannel, PowerDistributionPanel pdp) {
+        m_spark = spark;
         m_controllerChannel = controllerChannel;
         m_PDP = pdp;
         scancount = 0;
     }
     public void update() {
         BasicMotorCheck();
+        if(Math.abs(m_spark.get()) >= kMinimumSpeedForCheck){
         scancount++;
+        }
     }   
 
     /*
@@ -34,6 +37,7 @@ public class BasicMotorCheck {
      * CHECK IF ENCODER CONNECTED;;; //FIXME 
      */
     public int BasicMotorCheck(){
+    if(Math.abs(m_spark.get()) >= kMinimumSpeedForCheck){
         if(scancount >= 15){
             if(checkPDPCurrent() == 2)
             {
@@ -51,6 +55,10 @@ public class BasicMotorCheck {
         else{
         return 0;
         }
+    }
+    else{
+        return 0;
+    }
     }
 
         
@@ -71,9 +79,9 @@ public class BasicMotorCheck {
 
 
 
-    private final int kPDPOutputCurrentShutdown = 4;
-    private final int kPDPOutputCurrentWarning = 7;
-
+    private final int kPDPOutputCurrentShutdown = 1;
+    private final int kPDPOutputCurrentWarning = 2;
+    private final double kMinimumSpeedForCheck = 0.4;
 
 }
 

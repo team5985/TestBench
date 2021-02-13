@@ -128,18 +128,17 @@ public class TalonSRXCheck {
     }
 
 
-    public final int kMotorTemperatureShutdown = 80;
-    public final int kMotorTemperatureWarning = 55;
-    public final int kPDPOutputCurrentShutdown = 20;
-    public final int kPDPOutputCurrentWarning = 25;
-    public final int kMotorOutputCurrentShutdown = 20;
-    public final int kMotorOutputCurrentWarning = 25;
-    public final int kControllerBusVoltageShutdown = 10;
-    public final int kControllerBusVoltageWarning = 12;
-    public final int kEncoderVelocityShutdown = 0;
-    public final int kEncoderVelocityWarning = 5;
-    public final double kMinimumSpeedForCheck = 0.1;
-
+    private final int kMotorTemperatureShutdown = 80;
+    private final int kMotorTemperatureWarning = 55;
+    private final int kPDPOutputCurrentShutdown = 4;
+    private final int kPDPOutputCurrentWarning = 7;
+    private final int kMotorOutputCurrentShutdown = 20;
+    private final int kMotorOutputCurrentWarning = 25;
+    private final int kControllerBusVoltageShutdown = 10;
+    private final int kControllerBusVoltageWarning = 12;
+    private final int kEncoderVelocityShutdown = 0;
+    private final int kEncoderVelocityWarning = 5;
+    private final double kMinimumSpeedForCheck = 0.1;
 }
 
 
