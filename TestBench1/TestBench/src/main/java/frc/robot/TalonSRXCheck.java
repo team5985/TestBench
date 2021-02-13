@@ -14,8 +14,10 @@ public class TalonSRXCheck {
     int scancount;
     PowerDistributionPanel m_PDP;
     int m_controllerChannel;
-    public TalonSRXCheck(WPI_TalonSRX talon) {
+    public TalonSRXCheck(WPI_TalonSRX talon, int controllerChannel, PowerDistributionPanel pdp) {
         m_talon = talon;
+        m_PDP = pdp;
+        m_controllerChannel = controllerChannel;
         scancount = 0;
     }
 
@@ -130,8 +132,8 @@ public class TalonSRXCheck {
 
     private final int kMotorTemperatureShutdown = 80;
     private final int kMotorTemperatureWarning = 55;
-    private final int kPDPOutputCurrentShutdown = 4;
-    private final int kPDPOutputCurrentWarning = 7;
+    private final int kPDPOutputCurrentShutdown = 1;
+    private final int kPDPOutputCurrentWarning = 2;
     private final int kMotorOutputCurrentShutdown = 20;
     private final int kMotorOutputCurrentWarning = 25;
     private final int kControllerBusVoltageShutdown = 10;

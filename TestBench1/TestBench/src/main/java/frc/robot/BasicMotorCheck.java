@@ -11,13 +11,16 @@ public class BasicMotorCheck {
     PowerDistributionPanel m_PDP;
     int m_controllerChannel;
     Spark m_spark;
+    int faultScanCount;
     int scancount;
-
+    boolean faultOnLastScan;
     public BasicMotorCheck(Spark spark, int controllerChannel, PowerDistributionPanel pdp) {
         m_spark = spark;
         m_controllerChannel = controllerChannel;
         m_PDP = pdp;
         scancount = 0;
+        faultScanCount = 0;
+        faultOnLastScan = false;
     }
     public void update() {
         BasicMotorCheck();
@@ -39,18 +42,49 @@ public class BasicMotorCheck {
     public int BasicMotorCheck(){
     if(Math.abs(m_spark.get()) >= kMinimumSpeedForCheck){
         if(scancount >= 15){
-            if(checkPDPCurrent() == 2)
-            {
-            return 2;
-            }
-            else if(checkPDPCurrent() == 1)
-            {
-            return 1;
-            }
-            else
-            {
-            return 0;
-            }
+                if(checkPDPCurrent() == 2)
+                {
+                    if(faultScanCount >= 30){
+                        return 2;
+                    }
+                    else if(faultScanCount > 0 && faultScanCount < 30 && faultOnLastScan == true){
+                        faultScanCount++;
+                        return 0;
+                    }
+                    else if(faultScanCount > 0 && faultOnLastScan == false){
+                        faultScanCount = 0;
+                        return 0;
+                    }
+                    else{
+                    faultOnLastScan = true;
+                    return 0;
+                    }
+                    
+                }
+                else if(checkPDPCurrent() == 1)
+                {
+                    if(faultScanCount >= 30){
+                        return 1;
+                    }
+                    else if(faultScanCount > 0 && faultScanCount < 30 && faultOnLastScan == true){
+                        faultScanCount++;
+                        return 0;
+                    }
+                    else if(faultScanCount > 0 && faultOnLastScan == false){
+                        faultScanCount = 0;
+                        return 0;
+                    }
+                    else{
+                    faultOnLastScan = true;
+                    return 0;
+                    }
+                }
+                else
+                {
+                faultOnLastScan = false;
+                return 0;
+                }
+
         }
         else{
         return 0;

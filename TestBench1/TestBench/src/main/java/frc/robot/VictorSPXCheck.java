@@ -16,8 +16,10 @@ public class VictorSPXCheck {
     int scancount;
     PowerDistributionPanel m_PDP;
     int m_controllerChannel;
-    public VictorSPXCheck(WPI_VictorSPX victor) {
+    public VictorSPXCheck(WPI_VictorSPX victor, int controllerChannel, PowerDistributionPanel pdp) {
         m_victor = victor;
+        m_PDP = pdp;
+        m_controllerChannel = controllerChannel;
         scancount = 0;
     }
 
