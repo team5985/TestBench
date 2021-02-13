@@ -16,6 +16,7 @@ import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
 
 import edu.wpi.first.wpilibj.Compressor;
+import edu.wpi.first.wpilibj.Encoder;
 
 import com.revrobotics.CANEncoder;
 import com.revrobotics.CANSparkMax;
@@ -86,6 +87,7 @@ public class Robot extends TimedRobot {
   public void autonomousInit() {
     
   }
+
 
   /** This function is called periodically during autonomous. */
   @Override

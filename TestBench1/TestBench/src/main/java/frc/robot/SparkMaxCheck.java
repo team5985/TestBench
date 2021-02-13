@@ -12,13 +12,16 @@ public class SparkMaxCheck {
     int m_controllerChannel;
     CANEncoder m_encoder;
     int scancount;
-
+    int faultScanCount;
+    boolean faultOnLastScan;
     public SparkMaxCheck(CANSparkMax spark, CANEncoder encoder, int controllerChannel, PowerDistributionPanel pdp) {
         m_spark = spark;
         m_encoder = encoder;
         m_controllerChannel = controllerChannel;
         m_PDP = pdp;
         scancount = 0;
+        faultScanCount = 0;
+        faultOnLastScan = false;
     }
 
     /*
@@ -37,11 +40,41 @@ public class SparkMaxCheck {
         if(scancount >= 15){
             if(checkControllerComms() == 2 || checkControllerError() == 2 || checkControllerBusVoltage() == 2 || checkEncoderRotations() == 2 || checkMotorTemperature() == 2 || checkPDPCurrent() == 2)
             {
-            return 2;
+                if(faultScanCount >= faultScanCountMinimum){
+                    return 2;
+                }
+                else if(faultScanCount > 0 && faultScanCount < faultScanCountMinimum && faultOnLastScan == true){
+                    faultScanCount++;
+                    return 0;
+                }
+                else if(faultScanCount > 0 && faultOnLastScan == false){
+                    faultScanCount = 0;
+                    return 0;
+                }
+                else{
+                faultScanCount++;
+                faultOnLastScan = true;
+                return 0;
+                }
             }
             else if(checkControllerComms() == 1 || checkControllerError() == 1 || checkControllerBusVoltage() == 1 || checkEncoderRotations() == 1 || checkMotorTemperature() == 1 || checkPDPCurrent() == 1)
             {
-            return 1;
+                if(faultScanCount >= faultScanCountMinimum){
+                    return 1;
+                }
+                else if(faultScanCount > 0 && faultScanCount < faultScanCountMinimum && faultOnLastScan == true){
+                    faultScanCount++;
+                    return 0;
+                }
+                else if(faultScanCount > 0 && faultOnLastScan == false){
+                    faultScanCount = 0;
+                    return 0;
+                }
+                else{
+                faultScanCount++;
+                faultOnLastScan = true;
+                return 0;
+                }
             }
             else
             {
@@ -144,10 +177,10 @@ public class SparkMaxCheck {
     private final int kMotorOutputCurrentWarning = 25;
     private final int kControllerBusVoltageShutdown = 10;
     private final int kControllerBusVoltageWarning = 12;
-    private final int kEncoderVelocityShutdown = 0;
-    private final int kEncoderVelocityWarning = 5;
+    private final int kEncoderVelocityShutdown = 1;
+    private final int kEncoderVelocityWarning = 10;
     private final double kMinimumSpeedForCheck = 0.1;
-
+    private final int faultScanCountMinimum = 50;
 }
 
 

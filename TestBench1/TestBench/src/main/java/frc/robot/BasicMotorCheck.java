@@ -4,6 +4,7 @@ import com.revrobotics.CANEncoder;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.SparkMax;
 
+import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.PowerDistributionPanel;
 import edu.wpi.first.wpilibj.Spark;
 
@@ -12,12 +13,16 @@ public class BasicMotorCheck {
     int m_controllerChannel;
     Spark m_spark;
     int faultScanCount;
-    int scancount;
     boolean faultOnLastScan;
-    public BasicMotorCheck(Spark spark, int controllerChannel, PowerDistributionPanel pdp) {
+    int scancount;
+    CANEncoder m_CANencoder;
+    Encoder m_encoder;
+    public BasicMotorCheck(Spark spark, int controllerChannel, PowerDistributionPanel pdp, CANEncoder canencoder, Encoder encoder) {
         m_spark = spark;
         m_controllerChannel = controllerChannel;
         m_PDP = pdp;
+        m_encoder = encoder;
+        m_CANencoder = canencoder;
         scancount = 0;
         faultScanCount = 0;
         faultOnLastScan = false;
@@ -42,12 +47,12 @@ public class BasicMotorCheck {
     public int BasicMotorCheck(){
     if(Math.abs(m_spark.get()) >= kMinimumSpeedForCheck){
         if(scancount >= 15){
-                if(checkPDPCurrent() == 2)
+                if(checkPDPCurrent() == 2 || checkFirstEncoderRotations() == 2 || checkSecondEncoderRotations() == 2)
                 {
-                    if(faultScanCount >= 30){
+                    if(faultScanCount >= faultScanCountMinimum){
                         return 2;
                     }
-                    else if(faultScanCount > 0 && faultScanCount < 30 && faultOnLastScan == true){
+                    else if(faultScanCount > 0 && faultScanCount < faultScanCountMinimum && faultOnLastScan == true){
                         faultScanCount++;
                         return 0;
                     }
@@ -62,12 +67,12 @@ public class BasicMotorCheck {
                     }
                     
                 }
-                else if(checkPDPCurrent() == 1)
+                else if(checkPDPCurrent() == 1 || checkFirstEncoderRotations() == 1 || checkSecondEncoderRotations() == 1)
                 {
-                    if(faultScanCount >= 30){
+                    if(faultScanCount >= faultScanCountMinimum){
                         return 1;
                     }
-                    else if(faultScanCount > 0 && faultScanCount < 30 && faultOnLastScan == true){
+                    else if(faultScanCount > 0 && faultScanCount < faultScanCountMinimum && faultOnLastScan == true){
                         faultScanCount++;
                         return 0;
                     }
@@ -113,12 +118,42 @@ public class BasicMotorCheck {
         }
     }
 
+    private int checkFirstEncoderRotations() {
+        if (m_encoder == null){
+        return 0;
+        }
+        else{
+            if (Math.sqrt(Math.abs(m_encoder.get())) <= kEncoderVelocityShutdown) {
+                return 2;
+            } else if (Math.abs(m_encoder.get()) <= kEncoderVelocityWarning && Math.abs(m_encoder.get()) > kEncoderVelocityShutdown) {
+                return 1;
+            } else {
+                return 0;
+            }
+        }
+    }
+    private int checkSecondEncoderRotations() {
+        if(m_CANencoder == null){
+            return 0;
+        }
+        else{
+            if (Math.sqrt(Math.abs(m_CANencoder.getVelocity())) <= kEncoderVelocityShutdown) {
+                return 2;
+            } else if (Math.abs(m_CANencoder.getVelocity()) <= kEncoderVelocityWarning && Math.abs(m_CANencoder.getVelocity()) > kEncoderVelocityShutdown) {
+                return 1;
+            } else {
+                return 0;
+            }
+        }
+    }
 
 
     private final int kPDPOutputCurrentShutdown = 1;
     private final int kPDPOutputCurrentWarning = 2;
     private final double kMinimumSpeedForCheck = 0.4;
-
+    private final int faultScanCountMinimum = 50;
+    private final int kEncoderVelocityShutdown = 1;
+    private final int kEncoderVelocityWarning = 10;
 }
 
 
