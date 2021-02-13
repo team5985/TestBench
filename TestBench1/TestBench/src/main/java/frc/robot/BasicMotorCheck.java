@@ -18,6 +18,10 @@ public class BasicMotorCheck {
         m_PDP = pdp;
         scancount = 0;
     }
+    public void update() {
+        BasicMotorCheck();
+        scancount++;
+    }   
 
     /*
      * Comms with m_spark max CANSPARKMax.class line 819???? Errors reported by
@@ -29,7 +33,7 @@ public class BasicMotorCheck {
      * 
      * CHECK IF ENCODER CONNECTED;;; //FIXME 
      */
-    public int sparkMaxMotorCheck(){
+    public int BasicMotorCheck(){
         if(scancount >= 15){
             if(checkPDPCurrent() == 2)
             {
