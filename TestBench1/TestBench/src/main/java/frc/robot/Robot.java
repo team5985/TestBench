@@ -21,7 +21,6 @@ import edu.wpi.first.wpilibj.Encoder;
 import com.revrobotics.CANEncoder;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
-import frc.robot.SparkMaxCheck;
 /**
  * The VM is configured to automatically run this class, and to call the functions corresponding to
  * each mode, as described in the TimedRobot documentation. If you change the name of this class or
@@ -102,6 +101,8 @@ public class Robot extends TimedRobot {
   /** This function is called periodically during operator control. */
   @Override
   public void teleopPeriodic() {
+
+
     if(stick.getRawButton(1)) {
     leftMotor2.set(0.5);
     rightMotor2.set(-0.5);
