@@ -1,13 +1,9 @@
-package frc.robot.motorChecking;
+package frc.robot.motorchecking;
 
 import com.ctre.phoenix.motorcontrol.Faults;
-import com.ctre.phoenix.motorcontrol.StickyFaults;
-import com.ctre.phoenix.motorcontrol.can.TalonSRX;
-import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 
 import edu.wpi.first.wpilibj.PowerDistributionPanel;
-import edu.wpi.first.wpilibj.util.WPILibVersion;
 
 public class TalonSRXCheck extends MotorCheck{
     WPI_TalonSRX m_talon;
@@ -102,9 +98,9 @@ public class TalonSRXCheck extends MotorCheck{
             return 0;
         }
     }
-//FIXME
+
     private int checkControllerError() {
-        Faults faults = null;
+        Faults faults = new Faults();
         m_talon.getFaults(faults);
         if (faults.hasAnyFault()) {
             return 2;
@@ -124,8 +120,7 @@ public class TalonSRXCheck extends MotorCheck{
             return 0;
         }
     }
-    //FIXME
-    // MAKE SURE TO TEST
+
     private int checkMotorCurrent() {
         if (m_talon.getSupplyCurrent() < motorCheckConstants.kMotorOutputCurrentShutdown) {
             return 2;
@@ -137,7 +132,6 @@ public class TalonSRXCheck extends MotorCheck{
         }
 
     } 
-    //FIXME
     private int checkPDPCurrent() {
         if (m_PDP.getCurrent(m_controllerChannel) < motorCheckConstants.kPDPOutputCurrentShutdown) {
             return 2;

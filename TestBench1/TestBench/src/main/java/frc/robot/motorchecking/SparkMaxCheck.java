@@ -23,16 +23,6 @@ public class SparkMaxCheck extends MotorCheck{
         faultOnLastScan = false;
     }
 
-    /*
-     * Comms with m_spark max CANSPARKMax.class line 819???? Errors reported by
-     * m_spark max CANSPARKMax.class Line 90 Bus Voltage as detected by sparkmax
-     * CANSPARKMax.class line 705 Motor current as detected by m_spark max
-     * CANSPARKMax.class line 719 Current as detected by m_PDP Motor Rotations on
-     * Encoder CANSPARKMax.class Line 257 Motor Tempertaure CANSPARKMax.class Line
-     * 726
-     * 
-     * CHECK IF ENCODER CONNECTED;;; //FIXME 
-     */
     private int checkMotor(){
 
     if(Math.abs(m_spark.get()) >= motorCheckConstants.kMinimumSpeedForCheck){

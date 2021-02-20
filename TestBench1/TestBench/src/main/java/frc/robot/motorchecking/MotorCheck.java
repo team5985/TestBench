@@ -1,4 +1,4 @@
-package frc.robot.motorChecking;
+package frc.robot.motorchecking;
 
 public abstract class MotorCheck
 {
